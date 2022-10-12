@@ -12,14 +12,14 @@ class MainActivity : Activity() {
         Toast.makeText(this, "Bem Vindo(a) ao Orgs!", Toast.LENGTH_LONG).show()
         setContentView(R.layout.activity_main)
 
-        val nome = findViewById<TextView>(R.id.nome)
-        nome.text = "Salada de Frutas"
-
-        val descricao = findViewById<TextView>(R.id.descricao)
-        descricao.text = "Laranja, Manga e Uva"
-
-        val preco = findViewById<TextView>(R.id.valor)
-        preco.text = "19.99"
+//        val nome = findViewById<TextView>(R.id.nome)
+//        nome.text = "Salada de Frutas"
+//
+//        val descricao = findViewById<TextView>(R.id.descricao)
+//        descricao.text = "Laranja, Manga e Uva"
+//
+//        val preco = findViewById<TextView>(R.id.valor)
+//        preco.text = "19.99"
 
 
     }
