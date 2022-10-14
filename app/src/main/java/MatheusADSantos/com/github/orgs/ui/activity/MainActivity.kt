@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
+import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.app.Activity
 import android.os.Bundle
@@ -16,7 +17,28 @@ class MainActivity : Activity() {
 
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.adapter = ListaProdutosAdapter()
+        recyclerView.adapter = ListaProdutosAdapter(
+            context = this,
+            produtos = listOf(
+                Produto(
+                    nome = "teste",
+                    descricao = "desc teste",
+                    valor = "9.99".toBigDecimal()
+                ),Produto(
+                    nome = "teste2",
+                    descricao = "desc2 teste",
+                    valor = "29.99".toBigDecimal()
+                ),Produto(
+                    nome = "teste3",
+                    descricao = "desc3 teste",
+                    valor = "39.99".toBigDecimal()
+                ),Produto(
+                    nome = "teste4",
+                    descricao = "desc4 teste",
+                    valor = "49.99".toBigDecimal()
+                ),
+            )
+        )
 
     }
 
