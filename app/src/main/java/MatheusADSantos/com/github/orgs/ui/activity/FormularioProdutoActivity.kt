@@ -37,6 +37,7 @@ class FormularioProdutoActivity :
             val dao = ProdutoDAO()
             dao.adiciona(produto)
             Log.i("FormularioProduto", "onCreate: ${dao.buscaTodos()}")
+            finish()
         }
     }
 }
