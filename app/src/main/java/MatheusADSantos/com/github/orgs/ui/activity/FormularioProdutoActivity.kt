@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
+import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.os.Bundle
 import android.util.Log
@@ -33,10 +34,9 @@ class FormularioProdutoActivity :
             }
 
             val produto = Produto(nome = nome, descricao = descricao, valor = valor)
-            Log.i("FormularioProduto", "onCreate: $produto")
-
+            val dao = ProdutoDAO()
+            dao.adiciona(produto)
+            Log.i("FormularioProduto", "onCreate: ${dao.buscaTodos()}")
         }
-
     }
-
 }
