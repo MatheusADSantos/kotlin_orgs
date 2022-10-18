@@ -26,7 +26,7 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     }
 
     private fun configuraFAB() {
-        val fab = findViewById<FloatingActionButton>(R.id.fab_action_add)
+        val fab = findViewById<FloatingActionButton>(R.id.activitity_lista_produtos_fab)
         fab.setOnClickListener {
             vaiPara()
         }
@@ -38,7 +38,7 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     }
 
     private fun configuraRecyclerView() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = findViewById<RecyclerView>(R.id.activity_lista_produtos_recyclerview)
         recyclerView.adapter = adapter
     }
 
