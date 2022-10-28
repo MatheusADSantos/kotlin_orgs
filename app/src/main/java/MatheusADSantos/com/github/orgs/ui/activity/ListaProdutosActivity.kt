@@ -1,10 +1,13 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
+import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class ListaProdutosActivity : AppCompatActivity() {
@@ -21,7 +24,20 @@ class ListaProdutosActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFAB()
+
+        AlertDialog.Builder(this, 0)
+            .setTitle("Título")
+            .setMessage("Mensagem teste")
+            .setPositiveButton("Confirmar") { _, _ ->
+                Log.i("ListaProdutosActivity", "onCreate: CONFIRMOU")
+            }
+            .setNegativeButton("Cancelar") { _, _ ->
+                Log.e("ListaProdutosActivity", "onCreate: CANCELOU")
+            }
+            .setView(R.layout.activity_formulario_produto)
+            .show()
     }
+
 
     override fun onResume() {
         super.onResume()
