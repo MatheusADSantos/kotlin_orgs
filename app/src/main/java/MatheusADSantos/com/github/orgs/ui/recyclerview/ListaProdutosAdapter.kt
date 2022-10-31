@@ -28,7 +28,7 @@ class ListaProdutosAdapter(
             val valor = binding.produtoItemValor
             val valorEmMoeda: String = formataParaMoedaBrasileira(produto.valor)
             valor.text = valorEmMoeda
-            binding.imageView.load("https://www.pensenatural.com.br/wp-content/uploads/2019/01/beneficios-da-laranja-6.jpg")
+            binding.imageView.load(produto.imagem)
         }
 
         private fun formataParaMoedaBrasileira(valor: BigDecimal): String {

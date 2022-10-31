@@ -3,11 +3,13 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioProdutoBinding
+import MatheusADSantos.com.github.orgs.databinding.FormularioImageBinding
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -15,27 +17,34 @@ class FormularioProdutoActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
     }
+    private var url: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         configuraBotaoSalvar()
-        configuraImagemCarregar()
-    }
-
-    private fun configuraImagemCarregar() {
+        //Clico na IMAGEM
         binding.activityFormularioProdutoImagem.setOnClickListener {
-            AlertDialog.Builder(this, 0)
+            val bindingFormularioImagem = FormularioImageBinding.inflate(layoutInflater)
+            bindingFormularioImagem.formularioImagemBotaoCarregar.setOnClickListener {
+                val url = bindingFormularioImagem.formularioImagemUrl.text.toString()
+                Log.e("MADS", "onCreate: url: $url")
+                bindingFormularioImagem.formularioImagemImageview.load(url)
+            }
+
+            AlertDialog.Builder(this)
+                //.setView(R.layout.formulario_image)
+                .setView(bindingFormularioImagem.root)
                 .setPositiveButton("Confirmar") { _, _ ->
-                    Log.i("FormularioProdutoActivity", "configuraImagemCarregar: CONFIRMOU")
+                    url = bindingFormularioImagem.formularioImagemUrl.text.toString()
+                    binding.activityFormularioProdutoImagem.load(url)
                 }
                 .setNegativeButton("Cancelar") { _, _ ->
-                    Log.e("FormularioProdutoActivity", "configuraImagemCarregar: CANCELOU")
                 }
-                .setView(R.layout.formulario_image)
                 .show()
         }
     }
+
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
@@ -61,7 +70,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         } else {
             BigDecimal(valorTexto)
         }
-        return Produto(nome = nome, descricao = descricao, valor = valor)
+        return Produto(nome = nome, descricao = descricao, valor = valor, imagem = url)
     }
 
 }
