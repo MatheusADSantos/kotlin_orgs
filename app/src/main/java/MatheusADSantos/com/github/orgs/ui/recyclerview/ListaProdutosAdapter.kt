@@ -1,10 +1,13 @@
 package MatheusADSantos.com.github.orgs.ui.recyclerview
 
 import MatheusADSantos.com.github.orgs.databinding.ProdutoItemBinding
+import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -28,7 +31,10 @@ class ListaProdutosAdapter(
             val valor = binding.produtoItemValor
             val valorEmMoeda: String = formataParaMoedaBrasileira(produto.valor)
             valor.text = valorEmMoeda
-            binding.imageView.load(produto.imagem)
+            val visibilidade = if (produto.imagem != null) View.VISIBLE else View.GONE
+            binding.imageView.visibility = visibilidade
+            binding.imageView.tentaCarregarImagem(produto.imagem)
+
         }
 
         private fun formataParaMoedaBrasileira(valor: BigDecimal): String {
