@@ -3,6 +3,7 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
+import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -24,7 +25,9 @@ class ListaProdutosActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFAB()
-
+        FormularioImagemmDialog(this).mostra { imagem: String ->
+            Log.i("ListaProdutosActivity", "onCreate: $imagem")
+        }
     }
 
 
