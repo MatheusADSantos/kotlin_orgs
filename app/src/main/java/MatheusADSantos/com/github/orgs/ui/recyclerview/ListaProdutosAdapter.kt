@@ -1,35 +1,57 @@
 package MatheusADSantos.com.github.orgs.ui.recyclerview
 
 import MatheusADSantos.com.github.orgs.databinding.ProdutoItemBinding
+import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produto>
+    produtos: List<Produto>,
+    // declaração da função para o listener do adapter
+    var quandoClicaNoItem: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
 
-    class ViewHolder(private val binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    // utilização do inner na classe interna para acessar membros da classe superior
+    // nesse caso, a utilização da variável quandoClicaNoItem
+    inner class ViewHolder(private val binding: ProdutoItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        // Considerando que o ViewHolder modifica de valor com base na posição
+        // é necessário o uso de properties mutáveis, para evitar nullables
+        // utilizamos o lateinit, properties que podem ser inicializar depois
+        private lateinit var produto: Produto
+
+        init {
+            // implementação do listener do adapter
+            itemView.setOnClickListener {
+                // verificação da existência de valores em property lateinit
+                if (::produto.isInitialized) {
+                    quandoClicaNoItem(produto)
+                }
+            }
+        }
+
         fun vincula(produto: Produto) {
+            this.produto = produto
             val nome = binding.produtoItemNome
             nome.text = produto.nome
             val descricao = binding.produtoItemDescricao
             descricao.text = produto.descricao
             val valor = binding.produtoItemValor
-            val valorEmMoeda: String = formataParaMoedaBrasileira(produto.valor)
+            val valorEmMoeda: String = produto.valor
+                .formataParaMoedaBrasileira()
             valor.text = valorEmMoeda
             val visibilidade = if (produto.imagem != null) View.VISIBLE else View.GONE
             binding.imageView.visibility = visibilidade

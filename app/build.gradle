@@ -1,6 +1,8 @@
-                                                                              plugins {
+plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    // adição do plugin parcelize
+    id 'kotlin-parcelize'
 }
 
 android {
