@@ -8,22 +8,31 @@ import androidx.appcompat.app.AlertDialog
 
 class FormularioImagemmDialog(private val contexto: Context) {
 
-    fun mostra(quandoImagemCarregada: (imagem: String) -> Unit) {
-        val binding = FormularioImageBinding
-            .inflate(LayoutInflater.from(contexto))
-        binding.formularioImagemBotaoCarregar.setOnClickListener {
-            val url = binding.formularioImagemUrl.text.toString()
-            binding.formularioImagemImageview.tentaCarregarImagem(url)
-        }
+    fun mostra(urlPadrao: String? = null, quandoImagemCarregada: (imagem: String) -> Unit) {
 
-        AlertDialog.Builder(contexto)
-            .setView(binding.root)
-            .setPositiveButton("Confirmar") { _, _ ->
-                val url = binding.formularioImagemUrl.text.toString()
-                quandoImagemCarregada(url)
+        FormularioImageBinding.
+        inflate(LayoutInflater.from(contexto)).apply {
+
+            urlPadrao?.let {
+                formularioImagemImageview.tentaCarregarImagem(it)
+                formularioImagemUrl.setText(it)
             }
-            .setNegativeButton("Cancelar") { _, _ ->
+
+            formularioImagemBotaoCarregar.setOnClickListener {
+                val url = formularioImagemUrl.text.toString()
+                formularioImagemImageview.tentaCarregarImagem(url)
             }
-            .show()
+
+            AlertDialog.Builder(contexto)
+                .setView(root)
+                .setPositiveButton("Confirmar") { _, _ ->
+                    val url = formularioImagemUrl.text.toString()
+                    quandoImagemCarregada(url)
+                }
+                .setNegativeButton("Cancelar") { _, _ ->
+                }
+                .show()
+
+        }
     }
 }
