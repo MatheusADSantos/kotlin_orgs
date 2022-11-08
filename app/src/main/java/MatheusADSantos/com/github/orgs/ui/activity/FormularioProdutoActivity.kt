@@ -19,6 +19,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        title="Cadastro de Produtos"
         configuraBotaoSalvar()
         binding.activityFormularioProdutoImagem.setOnClickListener {
             FormularioImagemmDialog(contexto = this).mostra(urlPadrao = url) { imagem: String ->
