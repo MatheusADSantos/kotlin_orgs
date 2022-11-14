@@ -1,9 +1,11 @@
 package MatheusADSantos.com.github.orgs.model
 
-import kotlinx.android.parcel.Parcelize
 import android.os.Parcelable
+import androidx.room.Entity
+import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 
+@Entity
 @Parcelize
 data class Produto(
     val nome: String,
