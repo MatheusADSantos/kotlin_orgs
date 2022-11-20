@@ -1,13 +1,17 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
+import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
+import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
+import java.math.BigDecimal
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -23,15 +27,31 @@ class ListaProdutosActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFAB()
-        FormularioImagemmDialog(this).mostra { imagem: String ->
-            Log.i("ListaProdutosActivity", "onCreate: $imagem")
-        }
-    }
+//        FormularioImagemmDialog(this).mostra { imagem: String ->
+//            Log.i("ListaProdutosActivity", "onCreate: $imagem")
+//        }
 
+        val db = Room.databaseBuilder(
+            this,
+            AppDatabase::class.java,
+            "orgs.db"
+        ).allowMainThreadQueries()
+            .build()
+        val produtoDao = db.produtoDao()
+        produtoDao.salva(
+            Produto(
+                nome = "teste nome 1",
+                descricao = "teste desc 1",
+                valor = BigDecimal("10.0")
+            )
+        )
+        adapter.atualiza(produtoDao.buscaTodos())
+
+    }
 
     override fun onResume() {
         super.onResume()
-        adapter.atualiza(dao.buscaTodos())
+//        adapter.atualiza(dao.buscaTodos())
     }
 
     private fun configuraFAB() {
