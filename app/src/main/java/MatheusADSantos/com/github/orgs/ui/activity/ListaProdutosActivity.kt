@@ -1,17 +1,11 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
-import MatheusADSantos.com.github.orgs.dao.ProdutoDAO
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
-import MatheusADSantos.com.github.orgs.model.Produto
-import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
-import java.math.BigDecimal
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -19,8 +13,7 @@ class ListaProdutosActivity : AppCompatActivity() {
         ActivityListaProdutosBinding.inflate(layoutInflater)
     }
 
-    private val dao = ProdutoDAO()
-    private val adapter = ListaProdutosAdapter(context = this, produtos = dao.buscaTodos())
+    private val adapter = ListaProdutosAdapter(context = this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

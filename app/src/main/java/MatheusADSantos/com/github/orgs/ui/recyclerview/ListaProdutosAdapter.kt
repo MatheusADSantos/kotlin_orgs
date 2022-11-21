@@ -15,7 +15,7 @@ import java.util.*
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produto>,
+    produtos: List<Produto> = emptyList(),
     // declaração da função para o listener do adapter
     var quandoClicaNoItem: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
