@@ -27,31 +27,13 @@ class ListaProdutosActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFAB()
-//        FormularioImagemmDialog(this).mostra { imagem: String ->
-//            Log.i("ListaProdutosActivity", "onCreate: $imagem")
-//        }
-
-        val db = Room.databaseBuilder(
-            this,
-            AppDatabase::class.java,
-            "orgs.db"
-        ).allowMainThreadQueries()
-            .build()
-        val produtoDao = db.produtoDao()
-        produtoDao.salva(
-            Produto(
-                nome = "teste nome 1",
-                descricao = "teste desc 1",
-                valor = BigDecimal("10.0")
-            )
-        )
-        adapter.atualiza(produtoDao.buscaTodos())
-
     }
 
     override fun onResume() {
         super.onResume()
-//        adapter.atualiza(dao.buscaTodos())
+        val db = AppDatabase.instancia(this)
+        val produtoDao = db.produtoDao()
+        adapter.atualiza(produtoDao.buscaTodos())
     }
 
     private fun configuraFAB() {
@@ -70,8 +52,8 @@ class ListaProdutosActivity : AppCompatActivity() {
         val recyclerView = binding.activityListaProdutosRecyclerview
         recyclerView.adapter = adapter
 
-        // implementação do listener para abrir a Activity de detalhes do produto
-        // com o produto clicado
+        /* Implementação do listener para abrir a Activity de detalhes do produto
+        com o produto clicado*/
         adapter.quandoClicaNoItem = {
             val intent = Intent(
                 this,
