@@ -1,12 +1,12 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
+import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.databinding.ActivityDetalheProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.LayoutInflater
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 
 class DetalhesProdutoActivity : AppCompatActivity() {
@@ -19,6 +19,11 @@ class DetalhesProdutoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         tentaCarregarProduto()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     fun tentaCarregarProduto() {
