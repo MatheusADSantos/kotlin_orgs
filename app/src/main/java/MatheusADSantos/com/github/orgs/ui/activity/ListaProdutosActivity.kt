@@ -5,7 +5,10 @@ import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+
+private const val TAG = "ListaProdutosActivity"
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -48,14 +51,18 @@ class ListaProdutosActivity : AppCompatActivity() {
         /* Implementação do listener para abrir a Activity de detalhes do produto
         com o produto clicado*/
         adapter.quandoClicaNoItem = {
-            val intent = Intent(
-                this,
-                DetalhesProdutoActivity::class.java
-            ).apply {
+            val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
                 // envio do produto por meio do extra
                 putExtra(CHAVE_PRODUTO, it)
             }
             startActivity(intent)
+        }
+
+        adapter.quandoClicaEmEditar = {
+            Log.i(TAG, "configuraRecyclerView: EDITAR $it")
+        }
+        adapter.quandoClicaEmRemover = {
+            Log.i(TAG, "configuraRecyclerView: REMOVER $it")
         }
     }
 }
