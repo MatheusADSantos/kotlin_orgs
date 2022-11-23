@@ -6,8 +6,12 @@ import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+
+private const val TAG = "DetalhesProduto"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
@@ -24,6 +28,18 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_detalhes_produto_editar -> {
+                Log.i(TAG, "onOptionsItemSelected: editar")
+            }
+            R.id.menu_detalhes_produto_remover -> {
+                Log.i(TAG, "onOptionsItemSelected: remover")
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun tentaCarregarProduto() {
