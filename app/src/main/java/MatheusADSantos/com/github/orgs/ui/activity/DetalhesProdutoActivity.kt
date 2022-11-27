@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
+import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityDetalheProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
@@ -15,6 +16,7 @@ private const val TAG = "DetalhesProduto"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
+    private lateinit var produto: Produto
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
     }
@@ -31,19 +33,26 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_detalhes_produto_editar -> {
-                Log.i(TAG, "onOptionsItemSelected: editar")
-            }
-            R.id.menu_detalhes_produto_remover -> {
-                Log.i(TAG, "onOptionsItemSelected: remover")
+        if (::produto.isInitialized) {
+            val db = AppDatabase.instancia(this)
+            val produtoDAO = db.produtoDao()
+            when (item.itemId) {
+                R.id.menu_detalhes_produto_editar -> {
+                    Log.i(TAG, "onOptionsItemSelected: editar")
+                }
+                R.id.menu_detalhes_produto_remover -> {
+                    Log.e(TAG, "onOptionsItemSelected: Removendo produto: $produto")
+                    produtoDAO.remove(produto)
+                    finish()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun tentaCarregarProduto() {
+    private fun tentaCarregarProduto() {
         intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
+            produto = produtoCarregado
             preencheCampos(produtoCarregado)
         } ?: finish()
     }
