@@ -6,13 +6,14 @@ import MatheusADSantos.com.github.orgs.databinding.ActivityDetalheProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 
-private const val TAG = "DetalhesProduto"
+private const val TAG = "DetalhesProdutoActivity"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
@@ -38,7 +39,10 @@ class DetalhesProdutoActivity : AppCompatActivity() {
             val produtoDAO = db.produtoDao()
             when (item.itemId) {
                 R.id.menu_detalhes_produto_editar -> {
-                    Log.i(TAG, "onOptionsItemSelected: editar")
+                    Log.i(TAG, "onOptionsItemSelected: Editando produto: $produto")
+                    val intent = Intent(this, FormularioProdutoActivity::class.java)
+                    intent.apply { putExtra(CHAVE_PRODUTO, produto) }
+                    startActivity(intent)
                 }
                 R.id.menu_detalhes_produto_remover -> {
                     Log.e(TAG, "onOptionsItemSelected: Removendo produto: $produto")

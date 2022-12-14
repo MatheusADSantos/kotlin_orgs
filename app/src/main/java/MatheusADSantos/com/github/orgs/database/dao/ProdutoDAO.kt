@@ -1,10 +1,7 @@
 package MatheusADSantos.com.github.orgs.database.dao
 
 import MatheusADSantos.com.github.orgs.model.Produto
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ProdutoDAO {
@@ -17,4 +14,7 @@ interface ProdutoDAO {
 
     @Delete
     fun remove(produto: Produto)
+
+    @Update
+    fun altera(produto: Produto)
 }
