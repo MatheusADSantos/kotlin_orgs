@@ -17,9 +17,13 @@ private const val TAG = "DetalhesProdutoActivity"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
-    private lateinit var produto: Produto
+    private var produtoId: Long? = null
+    private var produto: Produto? = null
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
+    }
+    private val produtoDAO by lazy {
+        AppDatabase.instancia(this).produtoDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,27 +32,33 @@ class DetalhesProdutoActivity : AppCompatActivity() {
         tentaCarregarProduto()
     }
 
+    override fun onResume() {
+        super.onResume()
+        produtoId?.let { id ->
+            produto = produtoDAO.buscaPorID(id)
+        }
+        produto?.let { produto ->
+            preencheCampos(produto)
+        } ?: finish()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (::produto.isInitialized) {
-            val db = AppDatabase.instancia(this)
-            val produtoDAO = db.produtoDao()
-            when (item.itemId) {
-                R.id.menu_detalhes_produto_editar -> {
-                    Log.i(TAG, "onOptionsItemSelected: Editando produto: $produto")
-                    val intent = Intent(this, FormularioProdutoActivity::class.java)
-                    intent.apply { putExtra(CHAVE_PRODUTO, produto) }
-                    startActivity(intent)
-                }
-                R.id.menu_detalhes_produto_remover -> {
-                    Log.e(TAG, "onOptionsItemSelected: Removendo produto: $produto")
-                    produtoDAO.remove(produto)
-                    finish()
-                }
+        when (item.itemId) {
+            R.id.menu_detalhes_produto_editar -> {
+                Log.i(TAG, "onOptionsItemSelected: Editando produto: $produto")
+                val intent = Intent(this, FormularioProdutoActivity::class.java)
+                intent.apply { putExtra(CHAVE_PRODUTO, produto) }
+                startActivity(intent)
+            }
+            R.id.menu_detalhes_produto_remover -> {
+                Log.e(TAG, "onOptionsItemSelected: Removendo produto: $produto")
+                produto?.let { produtoDAO.remove(it) }
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -56,8 +66,9 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     private fun tentaCarregarProduto() {
         intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-            produto = produtoCarregado
-            preencheCampos(produtoCarregado)
+//            produto = produtoCarregado
+            produtoId = produtoCarregado.id
+//            preencheCampos(produtoCarregado)
         } ?: finish()
     }
 
