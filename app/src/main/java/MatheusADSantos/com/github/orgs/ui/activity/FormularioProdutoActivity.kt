@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
-
     private val binding by lazy {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
+    }
+    private val produtoDao by lazy {
+        AppDatabase.instancia(this).produtoDao()
     }
     private var url: String? = null
     private var produtoId = 0L
@@ -23,38 +25,47 @@ class FormularioProdutoActivity : AppCompatActivity() {
         title = "Cadastro de Produtos"
         configuraBotaoSalvar()
         binding.activityFormularioProdutoImagem.setOnClickListener {
-            FormularioImagemmDialog(contexto = this).mostra(urlPadrao = url) { imagem: String ->
-                url = imagem
-                binding.activityFormularioProdutoImagem.tentaCarregarImagem(url)
-            }
+            FormularioImagemmDialog(contexto = this)
+                .mostra(urlPadrao = url) { imagem: String ->
+                    url = imagem
+                    binding.activityFormularioProdutoImagem.tentaCarregarImagem(url)
+                }
         }
-        recebendoProdutoParaEditar()
+        tentaCarregarProduto()
     }
 
-    private fun recebendoProdutoParaEditar() {
+    private fun tentaCarregarProduto() {
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tentaBuscarProduto()
+    }
+
+    private fun tentaBuscarProduto() {
+        produtoDao.buscaPorID(produtoId)?.let {
+            preencheCampos(it)
+        }
+    }
+
+    private fun preencheCampos(produto: Produto) {
         title = "Alterar Produto"
-        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoParaEdicao ->
-            produtoId = produtoParaEdicao.id
-            url = produtoParaEdicao.imagem
-            binding.activityFormularioProdutoImagem.tentaCarregarImagem(produtoParaEdicao.imagem)
-            binding.activityFormularioProdutoNome.setText(produtoParaEdicao.nome)
-            binding.activityFormularioProdutoDescricao.setText(produtoParaEdicao.descricao)
-            binding.activityFormularioProdutoValor.setText(produtoParaEdicao.valor.toString())
+        url = produto.imagem
+        with(binding) {
+            activityFormularioProdutoImagem.tentaCarregarImagem(produto.imagem)
+            activityFormularioProdutoNome.setText(produto.nome)
+            activityFormularioProdutoDescricao.setText(produto.descricao)
+            activityFormularioProdutoValor.setText(produto.valor.toString())
         }
     }
 
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
-        val db = AppDatabase.instancia(this)
-        val produtoDao = db.produtoDao()
         botaoSalvar.setOnClickListener {
             val produtoNovo = criaProduto()
-            if (produtoId > 0) {
-                produtoDao.altera(produtoNovo)
-            } else {
-                produtoDao.salva(produtoNovo)
-            }
+            produtoDao.salva(produtoNovo)
             finish()
         }
     }

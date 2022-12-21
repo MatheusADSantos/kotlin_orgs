@@ -8,7 +8,6 @@ import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -17,12 +16,12 @@ private const val TAG = "DetalhesProdutoActivity"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
-    private var produtoId: Long? = null
+    private var produtoId: Long = 0L
     private var produto: Produto? = null
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
     }
-    private val produtoDAO by lazy {
+    private val produtoDao by lazy {
         AppDatabase.instancia(this).produtoDao()
     }
 
@@ -34,9 +33,11 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        produtoId?.let { id ->
-            produto = produtoDAO.buscaPorID(id)
-        }
+        buscaProduto()
+    }
+
+    private fun buscaProduto() {
+        produto = produtoDao.buscaPorID(produtoId)
         produto?.let { produto ->
             preencheCampos(produto)
         } ?: finish()
@@ -50,14 +51,13 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_detalhes_produto_editar -> {
-                Log.i(TAG, "onOptionsItemSelected: Editando produto: $produto")
-                val intent = Intent(this, FormularioProdutoActivity::class.java)
-                intent.apply { putExtra(CHAVE_PRODUTO, produto) }
-                startActivity(intent)
+                Intent(this, FormularioProdutoActivity::class.java).apply {
+                    putExtra(CHAVE_PRODUTO_ID, produtoId)
+                    startActivity(this)
+                }
             }
             R.id.menu_detalhes_produto_remover -> {
-                Log.e(TAG, "onOptionsItemSelected: Removendo produto: $produto")
-                produto?.let { produtoDAO.remove(it) }
+                produto?.let { produtoDao.remove(it) }
                 finish()
             }
         }
@@ -65,11 +65,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     }
 
     private fun tentaCarregarProduto() {
-        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-//            produto = produtoCarregado
-            produtoId = produtoCarregado.id
-//            preencheCampos(produtoCarregado)
-        } ?: finish()
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }
 
     private fun preencheCampos(produtoCarregado: Produto) {

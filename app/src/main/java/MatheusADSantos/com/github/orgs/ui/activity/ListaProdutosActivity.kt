@@ -29,6 +29,7 @@ class ListaProdutosActivity : AppCompatActivity() {
         super.onResume()
         val db = AppDatabase.instancia(this)
         val produtoDao = db.produtoDao()
+//        produtoDao.deletaTodos()
         adapter.atualiza(produtoDao.buscaTodos())
     }
 
@@ -50,19 +51,23 @@ class ListaProdutosActivity : AppCompatActivity() {
 
         /* Implementação do listener para abrir a Activity de detalhes do produto
         com o produto clicado*/
-        adapter.quandoClicaNoItem = {
-            val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
-                // envio do produto por meio do extra
-                putExtra(CHAVE_PRODUTO, it)
-            }
-            startActivity(intent)
-        }
+        entrandoDetalhe()
 
         adapter.quandoClicaEmEditar = {
             Log.i(TAG, "configuraRecyclerView: EDITAR $it")
         }
         adapter.quandoClicaEmRemover = {
             Log.i(TAG, "configuraRecyclerView: REMOVER $it")
+        }
+    }
+
+    private fun entrandoDetalhe() {
+        adapter.quandoClicaNoItem = {
+            val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
+                // envio do produto por meio do extra
+                this.putExtra(CHAVE_PRODUTO_ID, it.id)
+            }
+            startActivity(intent)
         }
     }
 }
