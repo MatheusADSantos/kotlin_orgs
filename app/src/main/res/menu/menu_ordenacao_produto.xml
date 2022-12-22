@@ -7,26 +7,37 @@
         android:title="Delete TODOS"
         android:icon="@drawable/ic_action_delete_all"
         app:showAsAction="ifRoom"/>
+
     <item
-        android:id="@+id/menu_filter_produto_nome_desc"
-        android:title="Nome Desc" />
-    <item
-        android:id="@+id/menu_filter_produto_nome_asc"
-        android:title="Nome Asc" />
-    <item
-        android:id="@+id/menu_filter_produto_descricao_desc"
-        android:title="Descrição Desc" />
-    <item
-        android:id="@+id/menu_filter_produto_descricao_asc"
-        android:title="Descrição Asc" />
-    <item
-        android:id="@+id/menu_filter_produto_valor_desc"
-        android:title="Valor Desc" />
-    <item
-        android:id="@+id/menu_filter_produto_valor_asc"
-        android:title="Valor Asc" />
-    <item
-        android:id="@+id/menu_filter_produto_sem_ordenacao"
-        android:title="Sem Ordenação" />
+        android:id="@+id/menu_filter_produto"
+        android:title="Delete TODOS"
+        android:icon="@drawable/ic_action_filter"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/menu_filter_produto_nome_desc"
+                android:title="Nome Desc" />
+            <item
+                android:id="@+id/menu_filter_produto_nome_asc"
+                android:title="Nome Asc" />
+            <item
+                android:id="@+id/menu_filter_produto_descricao_desc"
+                android:title="Descrição Desc" />
+            <item
+                android:id="@+id/menu_filter_produto_descricao_asc"
+                android:title="Descrição Asc" />
+            <item
+                android:id="@+id/menu_filter_produto_valor_desc"
+                android:title="Valor Desc" />
+            <item
+                android:id="@+id/menu_filter_produto_valor_asc"
+                android:title="Valor Asc" />
+            <item
+                android:id="@+id/menu_filter_produto_sem_ordenacao"
+                android:title="Sem Ordenação" />
+        </menu>
+
+    </item>
 
 </menu>

@@ -2,7 +2,6 @@ package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
-import MatheusADSantos.com.github.orgs.database.converter.Converters
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
@@ -52,22 +51,22 @@ class ListaProdutosActivity : AppCompatActivity() {
                 adapter.atualiza(mutableListOf<Produto>())
             }
             R.id.menu_filter_produto_nome_desc -> {
-                ordenandoProdutos("nome", false)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorNomeDesc())
             }
             R.id.menu_filter_produto_nome_asc -> {
-                ordenandoProdutos("nome", true)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorNomeAsc())
             }
             R.id.menu_filter_produto_descricao_desc -> {
-                ordenandoProdutos("descricao", false)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorDescricaoDesc())
             }
             R.id.menu_filter_produto_descricao_asc -> {
-                ordenandoProdutos("descricao", true)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorDescricaoAsc())
             }
             R.id.menu_filter_produto_valor_desc -> {
-                ordenandoProdutos("valor", false)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorValorDesc())
             }
             R.id.menu_filter_produto_valor_asc -> {
-                ordenandoProdutos("valor", true)
+                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorValorAsc())
             }
             R.id.menu_filter_produto_sem_ordenacao -> {
                 adapter.atualiza(produtoDao.buscaTodos())
@@ -76,44 +75,7 @@ class ListaProdutosActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun ordenandoProdutos(tipo: String, ascendente: Boolean) {
-        if (ascendente) {
-            produtoDao.buscaTodos().sortedBy {
-                when (tipo) {
-                    "nome" -> {
-                        it.nome
-                    }
-                    "descricao" -> {
-                        it.descricao
-                    }
-                    else -> {
-                        Converters().deBigDecimalParaDouble(it.valor).toString()
-                    }
-                }
-            }.apply {
-                adapter.atualiza(this)
-            }
-        } else {
-            produtoDao.buscaTodos().sortedByDescending {
-                when (tipo) {
-                    "nome" -> {
-                        it.nome
-                    }
-                    "descricao" -> {
-                        it.descricao
-                    }
-                    else -> {
-                        Log.i(TAG, "ordenandoProdutos: $tipo")
-                        Log.i(TAG, "ordenandoProdutos: ${Converters().deBigDecimalParaInt(it.valor).toString()}")
-                        Converters().deBigDecimalParaInt(it.valor).toString()
-                    }
-                }
-            }.apply {
-                adapter.atualiza(this)
-            }
-        }
 
-    }
 
     private fun configuraFAB() {
         val fab = binding.activitityListaProdutosFab
