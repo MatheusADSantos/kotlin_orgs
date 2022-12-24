@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 private const val TAG = "ListaProdutosActivity"
 
@@ -31,11 +33,11 @@ class ListaProdutosActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFAB()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        adapter.atualiza(produtoDao.buscaTodos())
+        lifecycleScope.launch {
+            produtoDao.buscaTodos().collect { produtos ->
+                adapter.atualiza(produtos)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -51,25 +53,53 @@ class ListaProdutosActivity : AppCompatActivity() {
                 adapter.atualiza(mutableListOf<Produto>())
             }
             R.id.menu_filter_produto_nome_desc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorNomeDesc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorNomeDesc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_nome_asc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorNomeAsc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorNomeAsc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_descricao_desc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorDescricaoDesc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorDescricaoDesc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_descricao_asc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorDescricaoAsc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorDescricaoAsc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_valor_desc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorValorDesc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorValorDesc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_valor_asc -> {
-                adapter.atualiza(produtoDao.buscaTodosOrdenadoPorValorAsc())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodosOrdenadoPorValorAsc().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
             R.id.menu_filter_produto_sem_ordenacao -> {
-                adapter.atualiza(produtoDao.buscaTodos())
+                lifecycleScope.launch {
+                    produtoDao.buscaTodos().collect {
+                        adapter.atualiza(it)
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
