@@ -41,5 +41,5 @@ interface ProdutoDAO {
 //    fun altera(produto: Produto)
 
     @Query("SELECT * FROM Produto WHERE id == :id")
-    fun buscaPorID(id: Long) : Produto?
+    fun buscaPorID(id: Long) : Flow<Produto?>
 }

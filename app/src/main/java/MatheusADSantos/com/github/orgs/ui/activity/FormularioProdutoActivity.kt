@@ -7,6 +7,8 @@ import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -24,6 +26,12 @@ class FormularioProdutoActivity : AppCompatActivity() {
         setContentView(binding.root)
         title = "Cadastro de Produtos"
         configuraBotaoSalvar()
+        configuraImagem()
+        tentaCarregarProduto()
+        tentaBuscarProduto()
+    }
+
+    private fun configuraImagem() {
         binding.activityFormularioProdutoImagem.setOnClickListener {
             FormularioImagemmDialog(contexto = this)
                 .mostra(urlPadrao = url) { imagem: String ->
@@ -31,21 +39,19 @@ class FormularioProdutoActivity : AppCompatActivity() {
                     binding.activityFormularioProdutoImagem.tentaCarregarImagem(url)
                 }
         }
-        tentaCarregarProduto()
     }
 
     private fun tentaCarregarProduto() {
         produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }
 
-    override fun onResume() {
-        super.onResume()
-        tentaBuscarProduto()
-    }
-
     private fun tentaBuscarProduto() {
-        produtoDao.buscaPorID(produtoId)?.let {
-            preencheCampos(it)
+        lifecycleScope.launch {
+            produtoDao.buscaPorID(produtoId).collect { produto ->
+                produto?.let {
+                    preencheCampos(it)
+                }
+            }
         }
     }
 
@@ -65,8 +71,10 @@ class FormularioProdutoActivity : AppCompatActivity() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
         botaoSalvar.setOnClickListener {
             val produtoNovo = criaProduto()
-            produtoDao.salva(produtoNovo)
-            finish()
+            lifecycleScope.launch {
+                produtoDao.salva(produtoNovo)
+                finish()
+            }
         }
     }
 

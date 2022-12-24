@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 private const val TAG = "DetalhesProdutoActivity"
 
@@ -29,18 +31,18 @@ class DetalhesProdutoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         tentaCarregarProduto()
-    }
-
-    override fun onResume() {
-        super.onResume()
         buscaProduto()
     }
 
     private fun buscaProduto() {
-        produto = produtoDao.buscaPorID(produtoId)
-        produto?.let { produto ->
-            preencheCampos(produto)
-        } ?: finish()
+        lifecycleScope.launch {
+            produtoDao.buscaPorID(produtoId).collect { produtoEncontrado ->
+                produto = produtoEncontrado
+                produto?.let {
+                    preencheCampos(it)
+                } ?: finish()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
