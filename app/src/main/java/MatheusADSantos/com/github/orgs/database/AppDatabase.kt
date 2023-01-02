@@ -9,7 +9,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [Produto::class], version = 1)
+@Database(
+    entities = [Produto::class],
+    version = 1,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun produtoDao(): ProdutoDAO
