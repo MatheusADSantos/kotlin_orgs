@@ -1,5 +1,6 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
+import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioCadastroUsuarioBinding
 import MatheusADSantos.com.github.orgs.model.Usuario
 import android.os.Bundle
@@ -14,32 +15,36 @@ class FormularioCadastroUsuarioActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityFormularioCadastroUsuarioBinding.inflate(layoutInflater)
     }
-//    private val dao by lazy {
-//        AppDatabase.instancia(this).usuarioDao()
-//    }
+    private val dao by lazy {
+        AppDatabase.instancia(this).usuarioDao()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-//        configuraBotaoCadastrar()
+        configuraBotaoCadastrar()
     }
 
     private fun configuraBotaoCadastrar() {
         binding.activityFormularioCadastroBotaoCadastrar.setOnClickListener {
-//            val novoUsuario = criaUsuario()
-//            Log.i("CadastroUsuario", "onCreate: $novoUsuario")
-            lifecycleScope.launch {
-                try {
-//                    dao.salva(novoUsuario)
-                    finish()
-                } catch (e: Exception) {
-                    Log.e("CadastroUsuario", "configuraBotaoCadastrar: ", e)
-                    Toast.makeText(
-                        this@FormularioCadastroUsuarioActivity,
-                        "Falha ao cadastrar usuário",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            val novoUsuario = criaUsuario()
+            Log.i("CadastroUsuario", "onCreate: $novoUsuario")
+            cadastraUsuario(novoUsuario)
+        }
+    }
+
+    private fun cadastraUsuario(novoUsuario: Usuario) {
+        lifecycleScope.launch {
+            try {
+                dao.salva(novoUsuario)
+                finish()
+            } catch (e: Exception) {
+                Log.e("CadastroUsuario", "configuraBotaoCadastrar: ", e)
+                Toast.makeText(
+                    this@FormularioCadastroUsuarioActivity,
+                    "Falha ao cadastrar usuário",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

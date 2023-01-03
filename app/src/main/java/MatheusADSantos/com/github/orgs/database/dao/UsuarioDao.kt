@@ -8,6 +8,6 @@ import androidx.room.Insert
 interface UsuarioDao {
 
     @Insert
-    fun salva(usuario: Usuario)
+    suspend fun salva(usuario: Usuario)
 
 }
