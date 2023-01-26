@@ -49,8 +49,10 @@ class ListaProdutosActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_filter_produto_deleta_todos -> {
                 Log.e(TAG, "onOptionsItemSelected: Deleta TODOS")
-                produtoDao.deletaTodos()
-                adapter.atualiza(mutableListOf<Produto>())
+                lifecycleScope.launch {
+                    produtoDao.deletaTodos()
+                    adapter.atualiza(mutableListOf<Produto>())
+                }
             }
             R.id.menu_filter_produto_nome_desc -> {
                 lifecycleScope.launch {

@@ -11,7 +11,7 @@ interface ProdutoDao {
     fun buscaTodos() : Flow<List<Produto>>
 
     @Query("DELETE FROM Produto")
-    fun deletaTodos()
+    suspend fun deletaTodos()
 
     @Query("SELECT * FROM Produto ORDER BY nome ASC")
     fun buscaTodosOrdenadoPorNomeAsc(): Flow<List<Produto>>
@@ -32,7 +32,7 @@ interface ProdutoDao {
     fun buscaTodosOrdenadoPorValorDesc(): Flow<List<Produto>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun salva(vararg produto:Produto)
+    suspend fun salva(vararg produto:Produto)
 
     @Delete
     fun remove(produto: Produto)
