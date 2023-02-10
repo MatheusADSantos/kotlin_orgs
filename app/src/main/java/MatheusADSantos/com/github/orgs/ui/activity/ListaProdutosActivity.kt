@@ -21,11 +21,12 @@ class ListaProdutosActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityListaProdutosBinding.inflate(layoutInflater)
     }
-
     private val produtoDao by lazy {
         AppDatabase.instancia(this).produtoDao()
     }
-
+    private val usuarioDao by lazy {
+        AppDatabase.instancia(this).usuarioDao()
+    }
     private val adapter = ListaProdutosAdapter(context = this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +35,15 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFAB()
         lifecycleScope.launch {
-            produtoDao.buscaTodos().collect { produtos ->
-                adapter.atualiza(produtos)
+            launch {
+                produtoDao.buscaTodos().collect { produtos ->
+                    adapter.atualiza(produtos)
+                }
+            }
+            intent.getStringExtra("CHAVE_USUARIO_ID")?.let {
+                usuarioDao.buscaPorId(it).collect { usuarioId ->
+                    Log.i(TAG, "onCreate: $usuarioId")
+                }
             }
         }
     }
@@ -106,7 +114,6 @@ class ListaProdutosActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 
     private fun configuraFAB() {
