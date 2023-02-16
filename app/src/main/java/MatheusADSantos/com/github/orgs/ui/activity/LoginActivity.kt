@@ -2,6 +2,7 @@ package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityLoginBinding
+import MatheusADSantos.com.github.orgs.extensions.toHash
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
@@ -37,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 usuarioDao.autentica(usuario, senha)?.let { usuario ->
                     dataStore.edit { preferences ->
-                        preferences[usuarioLogadoPreferences] = usuario.id
+                        preferences[usuarioLogadoPreferences] = usuario.id.toHash()
                     }
                     vaiPara(ListaProdutosActivity::class.java)
                 } ?: Toast.makeText(
