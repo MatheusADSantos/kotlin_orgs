@@ -4,6 +4,8 @@ import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.model.Produto
+import MatheusADSantos.com.github.orgs.preferences.dataStore
+import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -40,9 +42,11 @@ class ListaProdutosActivity : AppCompatActivity() {
                     adapter.atualiza(produtos)
                 }
             }
-            intent.getStringExtra("CHAVE_USUARIO_ID")?.let {
-                usuarioDao.buscaPorId(it).collect { usuarioId ->
-                    Log.i(TAG, "onCreate: $usuarioId")
+            dataStore.data.collect { preferences ->
+                preferences[usuarioLogadoPreferences]?.let { idUsuario ->
+                    usuarioDao.buscaPorId(idUsuario).collect { usuario ->
+                        Log.e(TAG, "onCreate: $usuario", )
+                    }
                 }
             }
         }

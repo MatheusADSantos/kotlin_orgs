@@ -3,9 +3,12 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityLoginBinding
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
+import MatheusADSantos.com.github.orgs.preferences.dataStore
+import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
@@ -33,9 +36,10 @@ class LoginActivity : AppCompatActivity() {
             val senha = binding.activityLoginSenha.text.toString()
             lifecycleScope.launch {
                 usuarioDao.autentica(usuario, senha)?.let { usuario ->
-                    vaiPara(ListaProdutosActivity::class.java) {
-                        putExtra("CHAVE_USUARIO_ID", usuario.id)
+                    dataStore.edit { preferences ->
+                        preferences[usuarioLogadoPreferences] = usuario.id
                     }
+                    vaiPara(ListaProdutosActivity::class.java)
                 } ?: Toast.makeText(
                     this@LoginActivity,
                     "Falha na autenticação",

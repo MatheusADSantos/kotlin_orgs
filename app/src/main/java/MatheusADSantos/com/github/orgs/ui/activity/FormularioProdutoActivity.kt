@@ -4,12 +4,17 @@ import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
+import MatheusADSantos.com.github.orgs.preferences.dataStore
+import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+
+private const val TAG = "FormularioProduto"
 
 class FormularioProdutoActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -17,6 +22,9 @@ class FormularioProdutoActivity : AppCompatActivity() {
     }
     private val produtoDao by lazy {
         AppDatabase.instancia(this).produtoDao()
+    }
+    private val usuarioDao by lazy {
+        AppDatabase.instancia(this).usuarioDao()
     }
     private var url: String? = null
     private var produtoId = 0L
@@ -29,6 +37,15 @@ class FormularioProdutoActivity : AppCompatActivity() {
         configuraImagem()
         tentaCarregarProduto()
         tentaBuscarProduto()
+        lifecycleScope.launch {
+            dataStore.data.collect { preferences ->
+                preferences[usuarioLogadoPreferences]?.let { idUsuario ->
+                    usuarioDao.buscaPorId(idUsuario).collect { usuario ->
+                        Log.e(TAG, "onCreate: $usuario", )
+                    }
+                }
+            }
+        }
     }
 
     private fun configuraImagem() {
