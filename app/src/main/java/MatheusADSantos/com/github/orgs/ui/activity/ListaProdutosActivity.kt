@@ -3,6 +3,7 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
+import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
@@ -43,22 +45,40 @@ class ListaProdutosActivity : AppCompatActivity() {
                 }
             }
             dataStore.data.collect { preferences ->
+                Log.e(TAG, "onCreate: preferences: $preferences", )
                 preferences[usuarioLogadoPreferences]?.let { idUsuario ->
-                    usuarioDao.buscaPorId(idUsuario).collect { usuario ->
-                        Log.e(TAG, "onCreate: $usuario", )
+                    Log.e(TAG, "onCreate: idUsuario: $idUsuario")
+                    launch {
+                        usuarioDao.buscaPorId(idUsuario).collect { usuario ->
+                            Log.e(TAG, "onCreate: $usuario", )
+                        }
                     }
-                }
+                } ?: vaiParaLogin()
             }
         }
     }
 
+    private fun vaiParaLogin() {
+        vaiPara(LoginActivity::class.java)
+        finish()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_ordenacao_produto, menu)
+        menuInflater.inflate(R.menu.menu_lista_produtos_sair_do_app, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menu_lista_produtos_sair_do -> {
+                Log.e(TAG, "onOptionsItemSelected: Saindo do app", )
+                lifecycleScope.launch {
+                    dataStore.edit { preferences ->
+                        preferences.remove(usuarioLogadoPreferences)
+                    }
+                }
+            }
             R.id.menu_filter_produto_deleta_todos -> {
                 Log.e(TAG, "onOptionsItemSelected: Deleta TODOS")
                 lifecycleScope.launch {
