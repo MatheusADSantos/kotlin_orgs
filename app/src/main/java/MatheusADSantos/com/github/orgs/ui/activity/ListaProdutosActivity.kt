@@ -5,6 +5,7 @@ import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.model.Produto
+import MatheusADSantos.com.github.orgs.model.Usuario
 import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
@@ -16,6 +17,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 private const val TAG = "ListaProdutosActivity"
@@ -39,28 +41,13 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFAB()
         lifecycleScope.launch {
-            launch {
-                produtoDao.buscaTodos().collect { produtos ->
-                    adapter.atualiza(produtos)
-                }
-            }
-            dataStore.data.collect { preferences ->
-                Log.e(TAG, "onCreate: preferences: $preferences", )
-                preferences[usuarioLogadoPreferences]?.let { idUsuario ->
-                    Log.e(TAG, "onCreate: idUsuario: $idUsuario")
-                    launch {
-                        usuarioDao.buscaPorId(idUsuario).collect { usuario ->
-                            Log.e(TAG, "onCreate: $usuario", )
-                        }
-                    }
-                } ?: vaiParaLogin()
-            }
+            launch { verificaUsuarioLogado() }
         }
     }
 
-    private fun vaiParaLogin() {
-        vaiPara(LoginActivity::class.java)
-        finish()
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch { buscaProdutos() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,11 +59,8 @@ class ListaProdutosActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_lista_produtos_sair_do -> {
-                Log.e(TAG, "onOptionsItemSelected: Saindo do app", )
                 lifecycleScope.launch {
-                    dataStore.edit { preferences ->
-                        preferences.remove(usuarioLogadoPreferences)
-                    }
+                    deslogaUsuario()
                 }
             }
             R.id.menu_filter_produto_deleta_todos -> {
@@ -130,15 +114,49 @@ class ListaProdutosActivity : AppCompatActivity() {
             }
             R.id.menu_filter_produto_sem_ordenacao -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodos().collect {
-                        adapter.atualiza(it)
-                    }
+                    buscaProdutos()
                 }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private suspend fun verificaUsuarioLogado() {
+        dataStore.data.collect { preferences ->
+            preferences[usuarioLogadoPreferences]?.let { idUsuario ->
+                buscaUsuario(idUsuario)
+            } ?: vaiParaLogin()
+        }
+    }
+
+    private fun buscaUsuario(idUsuario: String) {
+        lifecycleScope.launch {
+            usuarioDao.buscaPorId(idUsuario).firstOrNull()?.let { usuarioEncontrado ->
+                launch { buscaProdutosUsuario(usuarioEncontrado) }
+            }
+        }
+    }
+
+    private suspend fun buscaProdutosUsuario(usuario: Usuario) {
+        buscaProdutos()
+    }
+
+    private suspend fun deslogaUsuario() {
+        dataStore.edit { preferences ->
+            preferences.remove(usuarioLogadoPreferences)
+        }
+    }
+
+    private fun vaiParaLogin() {
+        vaiPara(LoginActivity::class.java)
+        finish()
+    }
+
+    private suspend fun buscaProdutos() {
+        produtoDao.buscaTodos().collect { produtos ->
+            adapter.atualiza(produtos)
+        }
+    }
 
     private fun configuraFAB() {
         val fab = binding.activitityListaProdutosFab

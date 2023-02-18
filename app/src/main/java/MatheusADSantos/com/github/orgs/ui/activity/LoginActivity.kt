@@ -3,11 +3,11 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityLoginBinding
 import MatheusADSantos.com.github.orgs.extensions.toHash
+import MatheusADSantos.com.github.orgs.extensions.toast
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
@@ -35,19 +35,19 @@ class LoginActivity : AppCompatActivity() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
             val usuario = binding.activityLoginUsuario.text.toString()
             val senha = binding.activityLoginSenha.text.toString()
-            lifecycleScope.launch {
-                usuarioDao.autentica(usuario, senha)?.let { usuario ->
-                    dataStore.edit { preferences ->
-                        preferences[usuarioLogadoPreferences] = usuario.id.toHash()
-                    }
-                    vaiPara(ListaProdutosActivity::class.java)
-                    finish()
-                } ?: Toast.makeText(
-                    this@LoginActivity,
-                    "Falha na autenticação",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            autentica(usuario, senha)
+        }
+    }
+
+    private fun autentica(usuario: String, senha: String) {
+        lifecycleScope.launch {
+            usuarioDao.autentica(usuario, senha)?.let { usuario ->
+                dataStore.edit { preferences ->
+                    preferences[usuarioLogadoPreferences] = usuario.id.toHash()
+                }
+                vaiPara(ListaProdutosActivity::class.java)
+                finish()
+            } ?: toast("Falha na Autenticação")
         }
     }
 
