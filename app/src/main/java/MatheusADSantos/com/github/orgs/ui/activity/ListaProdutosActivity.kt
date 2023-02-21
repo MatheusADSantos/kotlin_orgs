@@ -3,36 +3,24 @@ package MatheusADSantos.com.github.orgs.ui.activity
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
-import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.model.Usuario
-import MatheusADSantos.com.github.orgs.preferences.dataStore
-import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 private const val TAG = "ListaProdutosActivity"
 
-class ListaProdutosActivity : AppCompatActivity() {
+class ListaProdutosActivity : UsuarioBaseActivity() {
 
-    private val binding by lazy {
-        ActivityListaProdutosBinding.inflate(layoutInflater)
-    }
-    private val produtoDao by lazy {
-        AppDatabase.instancia(this).produtoDao()
-    }
-    private val usuarioDao by lazy {
-        AppDatabase.instancia(this).usuarioDao()
-    }
+    private val binding by lazy { ActivityListaProdutosBinding.inflate(layoutInflater) }
+    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
     private val adapter = ListaProdutosAdapter(context = this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +29,12 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFAB()
         lifecycleScope.launch {
-            launch { verificaUsuarioLogado() }
+            launch {
+                usuario.filterNotNull().collect { usuario ->
+                    Log.i(TAG, "onCreate: $usuario")
+                    buscaProdutosUsuario(usuario)
+                }
+            }
         }
     }
 
@@ -60,6 +53,7 @@ class ListaProdutosActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_lista_produtos_sair_do -> {
                 lifecycleScope.launch {
+                    Log.e(TAG, "onOptionsItemSelected: deslogando", )
                     deslogaUsuario()
                 }
             }
@@ -121,35 +115,8 @@ class ListaProdutosActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private suspend fun verificaUsuarioLogado() {
-        dataStore.data.collect { preferences ->
-            preferences[usuarioLogadoPreferences]?.let { idUsuario ->
-                buscaUsuario(idUsuario)
-            } ?: vaiParaLogin()
-        }
-    }
-
-    private fun buscaUsuario(idUsuario: String) {
-        lifecycleScope.launch {
-            usuarioDao.buscaPorId(idUsuario).firstOrNull()?.let { usuarioEncontrado ->
-                launch { buscaProdutosUsuario(usuarioEncontrado) }
-            }
-        }
-    }
-
     private suspend fun buscaProdutosUsuario(usuario: Usuario) {
         buscaProdutos()
-    }
-
-    private suspend fun deslogaUsuario() {
-        dataStore.edit { preferences ->
-            preferences.remove(usuarioLogadoPreferences)
-        }
-    }
-
-    private fun vaiParaLogin() {
-        vaiPara(LoginActivity::class.java)
-        finish()
     }
 
     private suspend fun buscaProdutos() {

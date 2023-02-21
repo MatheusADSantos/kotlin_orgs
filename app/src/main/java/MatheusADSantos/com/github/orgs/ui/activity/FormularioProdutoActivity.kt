@@ -4,30 +4,23 @@ import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
-import MatheusADSantos.com.github.orgs.preferences.dataStore
-import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 private const val TAG = "FormularioProduto"
 
-class FormularioProdutoActivity : AppCompatActivity() {
-    private val binding by lazy {
-        ActivityFormularioProdutoBinding.inflate(layoutInflater)
-    }
-    private val produtoDao by lazy {
-        AppDatabase.instancia(this).produtoDao()
-    }
-    private val usuarioDao by lazy {
-        AppDatabase.instancia(this).usuarioDao()
-    }
+class FormularioProdutoActivity : UsuarioBaseActivity() {
+
     private var url: String? = null
     private var produtoId = 0L
+    private val binding by lazy { ActivityFormularioProdutoBinding.inflate(layoutInflater) }
+    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +31,8 @@ class FormularioProdutoActivity : AppCompatActivity() {
         tentaCarregarProduto()
         tentaBuscarProduto()
         lifecycleScope.launch {
-            dataStore.data.collect { preferences ->
-                preferences[usuarioLogadoPreferences]?.let { idUsuario ->
-                    usuarioDao.buscaPorId(idUsuario).collect { usuario ->
-                        Log.e(TAG, "onCreate: $usuario", )
-                    }
-                }
+            usuario.filterNotNull().collect { usuario ->
+                Log.i(TAG, "onCreate: $usuario")
             }
         }
     }
