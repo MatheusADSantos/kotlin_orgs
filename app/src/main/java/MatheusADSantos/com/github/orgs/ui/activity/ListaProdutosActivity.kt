@@ -38,11 +38,6 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch { buscaProdutos() }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_ordenacao_produto, menu)
         menuInflater.inflate(R.menu.menu_lista_produtos_sair_do_app, menu)
@@ -133,33 +128,41 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
     }
 
     private fun vaiParaFormularioProduto() {
-        val intent = Intent(this, FormularioProdutoActivity::class.java)
-        startActivity(intent)
+        Intent(this, FormularioProdutoActivity::class.java).apply {
+            startActivity(this)
+        }
     }
 
     private fun configuraRecyclerView() {
         val recyclerView = binding.activityListaProdutosRecyclerview
         recyclerView.adapter = adapter
+        entraDetalheItem()
+        editaItem()
+        removeItem()
+    }
 
-        /* Implementação do listener para abrir a Activity de detalhes do produto
-        com o produto clicado*/
-        entrandoDetalhe()
-
-        adapter.quandoClicaEmEditar = {
-            Log.i(TAG, "configuraRecyclerView: EDITAR $it")
-        }
+    private fun removeItem() {
         adapter.quandoClicaEmRemover = {
             Log.i(TAG, "configuraRecyclerView: REMOVER $it")
         }
     }
 
-    private fun entrandoDetalhe() {
-        adapter.quandoClicaNoItem = {
-            val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
-                // envio do produto por meio do extra
+    private fun editaItem() {
+        adapter.quandoClicaEmEditar = {
+            Log.i(TAG, "configuraRecyclerView: EDITAR $it")
+            Intent(this, DetalhesProdutoActivity::class.java).apply {
                 this.putExtra(CHAVE_PRODUTO_ID, it.id)
+                startActivity(this)
             }
-            startActivity(intent)
+        }
+    }
+
+    private fun entraDetalheItem() {
+        adapter.quandoClicaNoItem = {
+            Intent(this, DetalhesProdutoActivity::class.java).apply {
+                this.putExtra(CHAVE_PRODUTO_ID, it.id)
+                startActivity(this)
+            }
         }
     }
 }

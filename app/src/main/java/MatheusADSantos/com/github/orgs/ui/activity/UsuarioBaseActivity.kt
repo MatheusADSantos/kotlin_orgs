@@ -7,7 +7,7 @@ import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+
+private const val TAG = "UsuarioBaseActivity"
 
 abstract class UsuarioBaseActivity : AppCompatActivity() {
 
@@ -24,16 +26,24 @@ abstract class UsuarioBaseActivity : AppCompatActivity() {
     private var _usuario: MutableStateFlow<Usuario?> = MutableStateFlow(null)
     protected var usuario: StateFlow<Usuario?> = _usuario
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         lifecycleScope.launch {
             verificaUsuarioLogado()
         }
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        lifecycleScope.launch {
+//            verificaUsuarioLogado()
+//        }
+//    }
+
     private suspend fun verificaUsuarioLogado() {
         dataStore.data.collect { preferences ->
             preferences[usuarioLogadoPreferences]?.let { idUsuario ->
+                Log.i(TAG, "verificaUsuarioLogado: $idUsuario")
                 buscaUsuario(idUsuario)
             } ?: vaiParaLogin()
         }
@@ -47,6 +57,9 @@ abstract class UsuarioBaseActivity : AppCompatActivity() {
 
     protected suspend fun deslogaUsuario() {
         dataStore.edit { preferences ->
+            Log.e(TAG, "deslogaUsuario: $preferences")
+            preferences.remove(usuarioLogadoPreferences)
+            preferences.clear()
             preferences.remove(usuarioLogadoPreferences)
         }
     }

@@ -2,12 +2,12 @@ package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityLoginBinding
-import MatheusADSantos.com.github.orgs.extensions.toHash
 import MatheusADSantos.com.github.orgs.extensions.toast
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.preferences.dataStore
 import MatheusADSantos.com.github.orgs.preferences.usuarioLogadoPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
@@ -17,12 +17,8 @@ private const val TAG = "LoginActivity"
 
 class LoginActivity : AppCompatActivity() {
 
-    private val binding by lazy {
-        ActivityLoginBinding.inflate(layoutInflater)
-    }
-    private val usuarioDao by lazy {
-        AppDatabase.instancia(this).usuarioDao()
-    }
+    private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
+    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +39,8 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             usuarioDao.autentica(usuario, senha)?.let { usuario ->
                 dataStore.edit { preferences ->
-                    preferences[usuarioLogadoPreferences] = usuario.id.toHash()
+                    Log.i(TAG, "autentica: $preferences - \nUsuário: ${usuario.id} ")
+                    preferences[usuarioLogadoPreferences] = usuario.id
                 }
                 vaiPara(ListaProdutosActivity::class.java)
                 finish()

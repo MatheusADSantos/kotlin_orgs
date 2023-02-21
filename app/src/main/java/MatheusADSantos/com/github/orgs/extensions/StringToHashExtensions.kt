@@ -9,13 +9,18 @@ package MatheusADSantos.com.github.orgs.extensions
 
 import java.security.MessageDigest
 
-fun String.toHash(
-    algoritmo: String = "SHA-256"
-): String {
+fun String.toHash(algoritmo: String = "SHA-256"): String {
     return MessageDigest
         .getInstance(algoritmo)
         .digest(this.toByteArray())
         .fold("") { str, byte ->
             str + "%02x".format(byte)
         }
+}
+
+fun String.toHash2(algorithm: String = "SHA-256"): String {
+    val bytes = MessageDigest.getInstance(algorithm).digest(this.toByteArray())
+    return bytes.joinToString("") {
+        "%02x".format(it)
+    }
 }
