@@ -40,16 +40,17 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_ordenacao_produto, menu)
-        menuInflater.inflate(R.menu.menu_lista_produtos_sair_do_app, menu)
+        menuInflater.inflate(R.menu.menu_lista_produtos_perfil, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_lista_produtos_sair_do -> {
+            R.id.menu_lista_produtos_perfil -> {
                 lifecycleScope.launch {
-                    Log.e(TAG, "onOptionsItemSelected: deslogando", )
-                    deslogaUsuario()
+                    Log.e(TAG, "onOptionsItemSelected: Entrando no Perfil!")
+                    vaiParaPerfilUsuario()
+//                    deslogaUsuario()
                 }
             }
             R.id.menu_filter_produto_deleta_todos -> {
@@ -133,6 +134,12 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         }
     }
 
+    private fun vaiParaPerfilUsuario() {
+        Intent(this, PerfilActivity::class.java).apply {
+            startActivity(this)
+        }
+    }
+
     private fun configuraRecyclerView() {
         val recyclerView = binding.activityListaProdutosRecyclerview
         recyclerView.adapter = adapter
@@ -142,15 +149,19 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
     }
 
     private fun removeItem() {
-        adapter.quandoClicaEmRemover = {
-            Log.i(TAG, "configuraRecyclerView: REMOVER $it")
+        adapter.quandoClicaEmRemover = { produtoSelecionado ->
+            Log.i(TAG, "configuraRecyclerView: REMOVER $produtoSelecionado")
+            lifecycleScope.launch {
+                produtoDao.remove(produtoSelecionado)
+//                buscaProdutos()
+            }
         }
     }
 
     private fun editaItem() {
         adapter.quandoClicaEmEditar = {
             Log.i(TAG, "configuraRecyclerView: EDITAR $it")
-            Intent(this, DetalhesProdutoActivity::class.java).apply {
+            Intent(this, FormularioProdutoActivity::class.java).apply {
                 this.putExtra(CHAVE_PRODUTO_ID, it.id)
                 startActivity(this)
             }

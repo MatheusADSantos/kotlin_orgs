@@ -59,8 +59,6 @@ abstract class UsuarioBaseActivity : AppCompatActivity() {
         dataStore.edit { preferences ->
             Log.e(TAG, "deslogaUsuario: $preferences")
             preferences.remove(usuarioLogadoPreferences)
-            preferences.clear()
-            preferences.remove(usuarioLogadoPreferences)
         }
     }
 

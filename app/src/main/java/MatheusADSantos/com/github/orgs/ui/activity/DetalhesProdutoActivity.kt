@@ -59,7 +59,11 @@ class DetalhesProdutoActivity : AppCompatActivity() {
                 }
             }
             R.id.menu_detalhes_produto_remover -> {
-                produto?.let { produtoDao.remove(it) }
+                produto?.let {
+                    lifecycleScope.launch {
+                        produtoDao.remove(it)
+                    }
+                }
                 finish()
             }
         }

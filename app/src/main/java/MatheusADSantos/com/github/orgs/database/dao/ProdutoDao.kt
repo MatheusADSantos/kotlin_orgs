@@ -35,7 +35,10 @@ interface ProdutoDao {
     suspend fun salva(vararg produto:Produto)
 
     @Delete
-    fun remove(produto: Produto)
+    suspend fun remove(produto: Produto)
+
+//    @Query("DELETE FROM Produto WHERE id == :produtoID")
+//    fun remove2(produtoID: Long)
 
 //    @Update
 //    fun altera(produto: Produto)
