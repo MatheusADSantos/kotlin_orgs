@@ -6,9 +6,7 @@ import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.dialog.FormularioImagemmDialog
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -30,11 +28,11 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
         configuraImagem()
         tentaCarregarProduto()
         tentaBuscarProduto()
-        lifecycleScope.launch {
-            usuario.filterNotNull().collect { usuario ->
-                Log.i(TAG, "onCreate: $usuario")
-            }
-        }
+//        lifecycleScope.launch {
+//            usuario.filterNotNull().collect { usuario ->
+//                Log.i(TAG, "onCreate: $usuario")
+//            }
+//        }
     }
 
     private fun configuraImagem() {
@@ -76,15 +74,17 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
         botaoSalvar.setOnClickListener {
-            val produtoNovo = criaProduto()
             lifecycleScope.launch {
-                produtoDao.salva(produtoNovo)
-                finish()
+                usuario.value?.let { usuario ->
+                    val produtoNovo = criaProduto(usuario.id)
+                    produtoDao.salva(produtoNovo)
+                    finish()
+                }
             }
         }
     }
 
-    private fun criaProduto(): Produto {
+    private fun criaProduto(usuarioId: String): Produto {
         val campoNome = binding.activityFormularioProdutoNome
         val nome = campoNome.text.toString()
         val campoDescricao = binding.activityFormularioProdutoDescricao
@@ -101,7 +101,8 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             nome = nome,
             descricao = descricao,
             valor = valor,
-            imagem = url
+            imagem = url,
+            usuarioId = usuarioId
         )
     }
 

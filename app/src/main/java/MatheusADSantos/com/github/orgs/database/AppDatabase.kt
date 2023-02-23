@@ -16,7 +16,7 @@ import androidx.room.TypeConverters
         Produto::class,
         Usuario::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -33,9 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 "orgs.db"
             )
-//                .allowMainThreadQueries()
-//                .fallbackToDestructiveMigration()
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
                 .also {
                     db = it
