@@ -4,7 +4,6 @@ import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.model.Produto
-import MatheusADSantos.com.github.orgs.model.Usuario
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -32,7 +31,7 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
             launch {
                 usuario.filterNotNull().collect { usuario ->
                     Log.i(TAG, "onCreate: $usuario")
-                    buscaProdutosUsuario(usuario)
+                    buscaProdutosUsuario(usuario.id)
                 }
             }
         }
@@ -111,8 +110,10 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private suspend fun buscaProdutosUsuario(usuario: Usuario) {
-        buscaProdutos()
+    private suspend fun buscaProdutosUsuario(usuarioId: String) {
+        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
+            adapter.atualiza(produtos)
+        }
     }
 
     private suspend fun buscaProdutos() {
