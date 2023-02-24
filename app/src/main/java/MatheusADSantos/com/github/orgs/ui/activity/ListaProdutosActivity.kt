@@ -106,6 +106,11 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
                     buscaProdutos()
                 }
             }
+            R.id.menu_filter_todos_produtos -> {
+                lifecycleScope.launch {
+                    vaiParaTodosProdutos()
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -137,6 +142,12 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
 
     private fun vaiParaPerfilUsuario() {
         Intent(this, PerfilActivity::class.java).apply {
+            startActivity(this)
+        }
+    }
+
+    private fun vaiParaTodosProdutos() {
+        Intent(this, TodosProdutosActivity::class.java).apply {
             startActivity(this)
         }
     }

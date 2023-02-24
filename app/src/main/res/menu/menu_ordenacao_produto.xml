@@ -36,6 +36,9 @@
             <item
                 android:id="@+id/menu_filter_produto_sem_ordenacao"
                 android:title="Sem Ordenação" />
+            <item
+                android:id="@+id/menu_filter_todos_produtos"
+                android:title="Todos Produtos - Todos Usuários" />
         </menu>
 
     </item>
