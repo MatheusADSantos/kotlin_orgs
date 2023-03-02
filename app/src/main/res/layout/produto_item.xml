@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,9 +10,9 @@
     app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/produto_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/produto_item">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/produto_item_nome"
@@ -58,26 +59,26 @@
             app:layout_goneMarginTop="8dp"
             tools:text="19.99" />
 
-<!--        <androidx.constraintlayout.widget.Guideline-->
-<!--            android:id="@+id/guideline"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            app:layout_constraintGuide_percent="0.3"-->
-<!--            />-->
+        <!--        <androidx.constraintlayout.widget.Guideline-->
+        <!--            android:id="@+id/guideline"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:orientation="vertical"-->
+        <!--            app:layout_constraintGuide_percent="0.3"-->
+        <!--            />-->
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/produto_item_nome"
-                app:layout_constraintWidth_percent="0.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/produto_1"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/produto_item_nome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.3"
+            app:srcCompat="@drawable/produto_1"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

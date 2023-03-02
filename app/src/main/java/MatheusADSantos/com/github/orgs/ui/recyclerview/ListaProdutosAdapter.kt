@@ -27,7 +27,6 @@ class ListaProdutosAdapter(
 
     private val produtos = produtos.toMutableList()
 
-
     // utilização do inner na classe interna para acessar membros da classe superior
     // nesse caso, a utilização da variável quandoClicaNoItem
     inner class ViewHolder(private val binding: ProdutoItemBinding) :
@@ -80,7 +79,7 @@ class ListaProdutosAdapter(
 
         override fun onMenuItemClick(item: MenuItem?): Boolean {
             item?.let {
-                when(it.itemId) {
+                when (it.itemId) {
                     R.id.menu_detalhes_produto_editar -> {
                         quandoClicaEmEditar(produto)
                     }
@@ -92,7 +91,6 @@ class ListaProdutosAdapter(
             return true
         }
     }
-
 
     // Criando/Config./Inflando os items do parent(RyclerView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -108,7 +106,6 @@ class ListaProdutosAdapter(
     }
 
     override fun getItemCount(): Int = produtos.size
-
 
     fun atualiza(produtos: List<Produto>) {
         this.produtos.clear()

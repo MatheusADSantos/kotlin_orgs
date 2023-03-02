@@ -22,7 +22,7 @@
         <activity android:name=".ui.activity.DetalhesProdutoActivity" />
         <activity android:name=".ui.activity.FormularioProdutoActivity" />
         <activity android:name=".ui.activity.PerfilActivity" />
-        <activity android:name=".ui.activity.TodosProdutosActivity" />
+        <activity android:name=".ui.activity.ListaTodosProdutosActivity" />
         <activity
             android:name=".ui.activity.ListaProdutosActivity"
             android:exported="true">

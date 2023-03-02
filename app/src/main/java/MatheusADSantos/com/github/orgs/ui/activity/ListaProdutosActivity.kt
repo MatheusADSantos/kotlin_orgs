@@ -147,7 +147,7 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
     }
 
     private fun vaiParaTodosProdutos() {
-        Intent(this, TodosProdutosActivity::class.java).apply {
+        Intent(this, ListaTodosProdutosActivity::class.java).apply {
             startActivity(this)
         }
     }
