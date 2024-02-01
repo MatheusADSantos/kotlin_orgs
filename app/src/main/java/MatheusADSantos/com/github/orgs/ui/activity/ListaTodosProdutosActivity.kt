@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.ProdutoRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaTodosProdutosBinding
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.recyclerview.CabecalhoListaTodosProdutosAdapter
@@ -15,7 +16,10 @@ import kotlinx.coroutines.launch
 class ListaTodosProdutosActivity : UsuarioBaseActivity() {
 
     private val binding by lazy { ActivityListaTodosProdutosBinding.inflate(layoutInflater) }
-    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).produtoDao()
+        ProdutoRepository(dao)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +30,7 @@ class ListaTodosProdutosActivity : UsuarioBaseActivity() {
     private fun configuraRecyclerViewTodosProdutos() {
         val recyclerview = binding.activityListaTodosProdutosRecyclerview
         lifecycleScope.launch {
-            produtoDao.buscaTodos().map { produtos ->
+            repository.buscaTodos().map { produtos ->
                 produtos.sortedBy {
                     it.usuarioId
                 }.groupBy {

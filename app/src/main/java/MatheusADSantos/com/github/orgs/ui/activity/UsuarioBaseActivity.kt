@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.UsuarioRepository
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
 import MatheusADSantos.com.github.orgs.model.Usuario
 import MatheusADSantos.com.github.orgs.preferences.dataStore
@@ -20,8 +21,9 @@ private const val TAG = "UsuarioBaseActivity"
 
 abstract class UsuarioBaseActivity : AppCompatActivity() {
 
-    private val usuarioDao by lazy {
-        AppDatabase.instancia(this).usuarioDao()
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).usuarioDao()
+        UsuarioRepository(dao)
     }
     private val _usuario: MutableStateFlow<Usuario?> = MutableStateFlow(null)
     protected val usuario: StateFlow<Usuario?> = _usuario
@@ -43,7 +45,7 @@ abstract class UsuarioBaseActivity : AppCompatActivity() {
     }
 
     private suspend fun buscaUsuario(idUsuario: String): Usuario? {
-        return usuarioDao
+        return repository
             .buscaPorId(idUsuario)
             .firstOrNull().also {
                 _usuario.value = it

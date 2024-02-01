@@ -2,6 +2,7 @@ package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.ProdutoRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityListaProdutosBinding
 import MatheusADSantos.com.github.orgs.model.Produto
 import MatheusADSantos.com.github.orgs.ui.recyclerview.ListaProdutosAdapter
@@ -19,7 +20,10 @@ private const val TAG = "ListaProdutosActivity"
 class ListaProdutosActivity : UsuarioBaseActivity() {
 
     private val binding by lazy { ActivityListaProdutosBinding.inflate(layoutInflater) }
-    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).produtoDao()
+        ProdutoRepository(dao)
+    }
     private val adapter = ListaProdutosAdapter(context = this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,48 +59,48 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
             R.id.menu_filter_produto_deleta_todos -> {
                 Log.e(TAG, "onOptionsItemSelected: Deleta TODOS")
                 lifecycleScope.launch {
-                    produtoDao.deletaTodos()
+                    repository.deletaTodos()
                     adapter.atualiza(mutableListOf<Produto>())
                 }
             }
             R.id.menu_filter_produto_nome_desc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorNomeDesc().collect {
+                    repository.buscaTodosOrdenadoPorNomeDesc().collect {
                         adapter.atualiza(it)
                     }
                 }
             }
             R.id.menu_filter_produto_nome_asc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorNomeAsc().collect {
+                    repository.buscaTodosOrdenadoPorNomeAsc().collect {
                         adapter.atualiza(it)
                     }
                 }
             }
             R.id.menu_filter_produto_descricao_desc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorDescricaoDesc().collect {
+                    repository.buscaTodosOrdenadoPorDescricaoDesc().collect {
                         adapter.atualiza(it)
                     }
                 }
             }
             R.id.menu_filter_produto_descricao_asc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorDescricaoAsc().collect {
+                    repository.buscaTodosOrdenadoPorDescricaoAsc().collect {
                         adapter.atualiza(it)
                     }
                 }
             }
             R.id.menu_filter_produto_valor_desc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorValorDesc().collect {
+                    repository.buscaTodosOrdenadoPorValorDesc().collect {
                         adapter.atualiza(it)
                     }
                 }
             }
             R.id.menu_filter_produto_valor_asc -> {
                 lifecycleScope.launch {
-                    produtoDao.buscaTodosOrdenadoPorValorAsc().collect {
+                    repository.buscaTodosOrdenadoPorValorAsc().collect {
                         adapter.atualiza(it)
                     }
                 }
@@ -116,13 +120,13 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
     }
 
     private suspend fun buscaProdutosUsuario(usuarioId: String) {
-        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
+        repository.buscaTodosDoUsuario(usuarioId).collect { produtos ->
             adapter.atualiza(produtos)
         }
     }
 
     private suspend fun buscaProdutos() {
-        produtoDao.buscaTodos().collect { produtos ->
+        repository.buscaTodos().collect { produtos ->
             adapter.atualiza(produtos)
         }
     }
@@ -164,7 +168,7 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         adapter.quandoClicaEmRemover = { produtoSelecionado ->
             Log.i(TAG, "configuraRecyclerView: REMOVER $produtoSelecionado")
             lifecycleScope.launch {
-                produtoDao.remove(produtoSelecionado)
+                repository.remove(produtoSelecionado)
 //                buscaProdutos()
             }
         }

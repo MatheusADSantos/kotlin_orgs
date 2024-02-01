@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.ProdutoRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
 import MatheusADSantos.com.github.orgs.model.Produto
@@ -17,8 +18,10 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
     private var url: String? = null
     private var produtoId = 0L
     private val binding by lazy { ActivityFormularioProdutoBinding.inflate(layoutInflater) }
-    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
-    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).produtoDao()
+        ProdutoRepository(dao)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +54,7 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
 
     private fun tentaBuscarProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorID(produtoId).collect { produto ->
+            repository.buscaPorID(produtoId).collect { produto ->
                 produto?.let {
                     preencheCampos(it)
                 }
@@ -77,7 +80,7 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             lifecycleScope.launch {
                 usuario.value?.let { usuario ->
                     val produtoNovo = criaProduto(usuario.id)
-                    produtoDao.salva(produtoNovo)
+                    repository.salva(produtoNovo)
                     finish()
                 }
             }

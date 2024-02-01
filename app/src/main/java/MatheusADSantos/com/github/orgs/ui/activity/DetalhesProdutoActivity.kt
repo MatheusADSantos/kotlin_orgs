@@ -2,6 +2,7 @@ package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.R
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.ProdutoRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityDetalheProdutoBinding
 import MatheusADSantos.com.github.orgs.extensions.formataParaMoedaBrasileira
 import MatheusADSantos.com.github.orgs.extensions.tentaCarregarImagem
@@ -23,8 +24,9 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
     }
-    private val produtoDao by lazy {
-        AppDatabase.instancia(this).produtoDao()
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).produtoDao()
+        ProdutoRepository(dao)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +38,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     private fun buscaProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorID(produtoId).collect { produtoEncontrado ->
+            repository.buscaPorID(produtoId).collect { produtoEncontrado ->
                 produto = produtoEncontrado
                 produto?.let {
                     preencheCampos(it)
@@ -58,10 +60,11 @@ class DetalhesProdutoActivity : AppCompatActivity() {
                     startActivity(this)
                 }
             }
+
             R.id.menu_detalhes_produto_remover -> {
                 produto?.let {
                     lifecycleScope.launch {
-                        produtoDao.remove(it)
+                        repository.remove(it)
                     }
                 }
                 finish()

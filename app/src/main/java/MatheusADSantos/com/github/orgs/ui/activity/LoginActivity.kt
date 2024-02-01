@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.UsuarioRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityLoginBinding
 import MatheusADSantos.com.github.orgs.extensions.toast
 import MatheusADSantos.com.github.orgs.extensions.vaiPara
@@ -18,7 +19,10 @@ private const val TAG = "LoginActivity"
 class LoginActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
-    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).usuarioDao()
+        UsuarioRepository(dao)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun autentica(usuario: String, senha: String) {
         lifecycleScope.launch {
-            usuarioDao.autentica(usuario, senha)?.let { usuario ->
+            repository.autentica(usuario, senha)?.let { usuario ->
                 dataStore.edit { preferences ->
                     Log.i(TAG, "autentica: $preferences - \nUsuário: ${usuario.id} ")
                     preferences[usuarioLogadoPreferences] = usuario.id

@@ -1,6 +1,7 @@
 package MatheusADSantos.com.github.orgs.ui.activity
 
 import MatheusADSantos.com.github.orgs.database.AppDatabase
+import MatheusADSantos.com.github.orgs.database.repositoy.UsuarioRepository
 import MatheusADSantos.com.github.orgs.databinding.ActivityFormularioCadastroUsuarioBinding
 import MatheusADSantos.com.github.orgs.extensions.toast
 import MatheusADSantos.com.github.orgs.model.Usuario
@@ -15,8 +16,9 @@ class FormularioCadastroUsuarioActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityFormularioCadastroUsuarioBinding.inflate(layoutInflater)
     }
-    private val dao by lazy {
-        AppDatabase.instancia(this).usuarioDao()
+    private val repository by lazy {
+        val dao = AppDatabase.instancia(this).usuarioDao()
+        UsuarioRepository(dao)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,7 @@ class FormularioCadastroUsuarioActivity : AppCompatActivity() {
     private fun cadastra(usuario: Usuario) {
         lifecycleScope.launch {
             try {
-                dao.salva(usuario)
+                repository.salva(usuario)
                 finish()
             } catch (e: Exception) {
                 Log.e("CadastroUsuario", "configuraBotaoCadastrar: ", e)
