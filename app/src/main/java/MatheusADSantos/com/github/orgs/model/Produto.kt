@@ -2,6 +2,7 @@ package MatheusADSantos.com.github.orgs.model
 
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -16,4 +17,16 @@ data class Produto(
     val valor: BigDecimal,
     val imagem: String? = null,
     val usuarioId: String? = null
-): Parcelable
+) : Parcelable {
+
+    @Ignore
+    val valorEhValido = !valorMenorOuIgualAZero() && !valorMaiorQueCem()
+
+    private fun valorMenorOuIgualAZero(): Boolean {
+        return valor <= BigDecimal.ZERO
+    }
+
+    private fun valorMaiorQueCem(): Boolean {
+        return valor > BigDecimal(100)
+    }
+}

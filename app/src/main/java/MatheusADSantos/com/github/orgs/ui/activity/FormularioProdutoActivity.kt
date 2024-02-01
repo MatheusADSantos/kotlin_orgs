@@ -80,8 +80,10 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             lifecycleScope.launch {
                 usuario.value?.let { usuario ->
                     val produtoNovo = criaProduto(usuario.id)
-                    repository.salva(produtoNovo)
-                    finish()
+                    if (produtoNovo.valorEhValido) {
+                        repository.salva(produtoNovo)
+                        finish()
+                    }
                 }
             }
         }

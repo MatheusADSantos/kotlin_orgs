@@ -9,7 +9,9 @@ fun Context.vaiPara(clazz: Class<*>, intent: Intent.() -> Unit = {}) {
         intent()
         startActivity(this)
     }
-}fun Context.toast(mensagem: String) {
+}
+
+fun Context.toast(mensagem: String) {
     Toast.makeText(
         this,
         mensagem,

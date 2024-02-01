@@ -27,7 +27,7 @@ class PerfilActivity: UsuarioBaseActivity() {
         lifecycleScope.launch {
             usuario?.filterNotNull()?.collect { usuario ->
                 perfilUsuario.text = usuario.id
-                perfilNome.text = usuario.nome
+                perfilNome.text = usuario.email
             }
         }
     }
